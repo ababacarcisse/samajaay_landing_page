@@ -1,5 +1,5 @@
 /** Verified on 2026-10-23: this origin currently serves the official Flutter app. */
-const VERIFIED_APP_URL = "https://samajaay.com/";
+const VERIFIED_APP_URL = "https://app.samajaay.com/";
 
 function publicUrl(value: string | undefined, fallback: string): string {
   const url = new URL(value || fallback);
