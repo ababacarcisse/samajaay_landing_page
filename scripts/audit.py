@@ -10,7 +10,9 @@ Reports and screenshots are written to the ignored artifacts/ directory.
 import argparse
 import asyncio
 import json
+import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 from playwright.async_api import async_playwright
 
@@ -21,8 +23,11 @@ async def run(args):
     results = {"url": args.url, "responsive": [], "interactions": {}, "errors": []}
 
     async with async_playwright() as playwright:
+        local_target = urlparse(args.url).hostname in {"localhost", "127.0.0.1", "::1", "0.0.0.0"}
+        proxy_server = None if local_target else os.environ.get("HTTPS_PROXY") or os.environ.get("HTTP_PROXY")
         browser = await playwright.chromium.launch(
             executable_path=args.chromium,
+            proxy={"server": proxy_server} if proxy_server else None,
             headless=True,
             args=["--no-sandbox", "--disable-dev-shm-usage"],
         )

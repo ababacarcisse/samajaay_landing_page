@@ -70,7 +70,7 @@ Les seize images WhatsApp sont visibles dans la conversation, mais leurs fichier
 Sur l’ordinateur qui possède les images, depuis le dossier du projet :
 
 ```powershell
-node scripts/import-screens.mjs --from "C:\Users\HP\Downloads"
+node scripts/import-screens.mjs --from "C:\Users\HP\Documents\moi\apps\saas\samajaay\public\screens"
 npm run build
 ```
 
@@ -147,6 +147,8 @@ Les largeurs de référence sont 360, 390, 430, 768, 1024 et 1440 px. Vérifier 
 Les résultats de livraison et leurs limites sont consignés dans [docs/validation.md](docs/validation.md).
 
 ## Déployer
+
+**Coolify sur VPS Hostinger (hébergement confirmé par le propriétaire) :** le push sur `main` déclenche déjà le déploiement automatique. Conserver le build `npm run build`, le démarrage `npm run start` et le port interne 3000 dans la configuration du service. Définir les variables publiques pour le build, avec la landing sur `https://samajaay.com/` et l’application sur `https://app.samajaay.com/`. Les domaines racine et `www` doivent joindre ce même service pour que la redirection 308 soit appliquée. Le tag GA4 est intégré avec l’ID fourni et reste bloqué avant consentement. Consulter les logs de déploiement Coolify si une nouvelle version n’apparaît pas après un push.
 
 **Vercel :** importer le dépôt contenant ce dossier, sélectionner Next.js, définir le répertoire racine si nécessaire, configurer les destinations et les éventuels identifiants de mesure/vérification, puis lancer `npm run build`. Vérifier la destination applicative avant d’affecter le domaine officiel.
 

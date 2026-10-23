@@ -14,6 +14,7 @@ It verifies the site's consent contract, not the remote GA service itself.
 import argparse
 import asyncio
 import json
+import os
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -72,16 +73,19 @@ async def run(args):
         await route.continue_()
 
     async with async_playwright() as playwright:
+        local_target = urlparse(args.url).hostname in {"localhost", "127.0.0.1", "::1", "0.0.0.0"}
+        proxy_server = None if local_target else os.environ.get("HTTPS_PROXY") or os.environ.get("HTTP_PROXY")
         browser = await playwright.chromium.launch(
             executable_path=args.chromium, headless=True,
+            proxy={"server": proxy_server} if proxy_server else None,
             args=["--no-sandbox", "--disable-dev-shm-usage"],
         )
         context = await browser.new_context(viewport={"width": 1440, "height": 1000})
         await context.route("**/*", intercept_google)
         page = await context.new_page()
         page.on("pageerror", lambda error: report["errors"].append(str(error)))
-        response = await page.goto(args.url, wait_until="networkidle")
-        assert response and response.status == 200, "The isolated test page must load"
+        response = await page.goto(args.url, wait_until="domcontentloaded")
+        assert response and response.status == 200, "The page must return HTTP 200"
 
         report["seo"] = await page.evaluate("""() => ({
           canonical: document.querySelector('link[rel="canonical"]')?.href,
@@ -110,7 +114,8 @@ async def run(args):
         assert await event_count(page, "cta_click") == 0, "Do not queue denied CTA events"
 
         await refuse.click()
-        await page.reload(wait_until="networkidle")
+        await page.reload(wait_until="domcontentloaded")
+        await preferences.wait_for(state="visible")
         assert await accept.count() == 0, "Persist the visitor's refusal"
         assert not google_requests and await script_count(page) == 0, "Refusal must prevent Google requests on return"
         await click_cta_without_navigation(page)
@@ -142,7 +147,7 @@ async def run(args):
         assert await script_count(page) == 1 and await event_count(page, "page_view") == 1
         report["accepted"] = {"singleScript": True, "singlePageView": True, "cta": cta}
 
-        await page.reload(wait_until="networkidle")
+        await page.reload(wait_until="domcontentloaded")
         await page.wait_for_function("window.__qaGoogleTagLoads === 1")
         await page.wait_for_function("(window.dataLayer || []).some(item => item[0] === 'event' && item[1] === 'page_view')")
         assert await accept.count() == 0, "An accepted returning visitor need not choose again"
@@ -161,7 +166,8 @@ async def run(args):
         assert await page.evaluate("id => window[`ga-disable-${id}`] === true", measurement_id), "Disable Google's already loaded tag on withdrawal"
         assert not any(cookie["name"].startswith("_ga") for cookie in await context.cookies()), "Remove accessible first-party GA cookies"
         assert len(google_requests) == requests_before_revoke, "Revocation must not initiate another Google request"
-        await page.reload(wait_until="networkidle")
+        await page.reload(wait_until="domcontentloaded")
+        await preferences.wait_for(state="visible")
         assert await script_count(page) == 0 and len(google_requests) == requests_before_revoke
         report["revocation"] = {"eventsBlocked": True, "accessibleCookiesCleared": True, "refusalPersists": True}
 

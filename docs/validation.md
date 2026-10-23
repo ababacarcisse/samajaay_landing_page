@@ -58,7 +58,8 @@ Rapports : `artifacts/traffic-seo-final/browser-audit.json`,
 Rapports : `artifacts/traffic-seo-lighthouse-mobile-check.report.{json,html}`
 et `artifacts/traffic-seo-lighthouse-desktop-final.report.{json,html}`.
 
-**L’objectif de performance mobile ≥ 90 et le LCP ≤ 2,5 s ne sont pas confirmés.**
+**Les mesures locales ne confirment pas la performance mobile ≥ 90 ni le LCP ≤ 2,5 s.**
+La mesure sur le domaine de production est présentée ci-dessous.
 Un premier audit du même build final donnait 67 (TBT 2 871,6 ms, LCP 2 231,6 ms,
 benchmark CPU 1 064) ; il reste conservé sous
 `traffic-seo-lighthouse-mobile-final.report.{json,html}`. Les deux versions
@@ -73,6 +74,43 @@ la feuille principale et supprime une requête CSS bloquante. Ces gains sont
 observables, sans attribuer toute variation de score à une seule modification.
 Les Core Web Vitals, l’INP terrain et la réception réelle des événements restent
 à vérifier après déploiement.
+
+### Contrôle du déploiement Coolify en production
+
+Le propriétaire a confirmé le déploiement automatique de `main` par Coolify
+sur un VPS Hostinger. Après le push, le nouveau bundle contenant l’ID GA4 a
+été observé sur `https://samajaay.com/`, puis le contrôle suivant a réussi :
+
+```bash
+python scripts/audit-analytics.py --url https://samajaay.com \
+  --chromium /usr/bin/chromium --measurement-id G-2E8X0XGQX2 \
+  --google-token '' --bing-token '' --output-dir artifacts/analytics-production
+```
+
+Le mécanisme de consentement, le retour avec un choix mémorisé, les clics CTA,
+la révocation, le nettoyage des cookies accessibles, la canonique et la
+redirection www en 308 passent aussi sur le domaine de production. Le bandeau
+ne déborde pas à 360 et 1440 px, sans violation axe ni erreur JavaScript.
+Rapport : `artifacts/analytics-production/analytics-audit.json`.
+
+Les requêtes de mesure sont restées interceptées durant ce contrôle : la
+présence du code et son comportement en production sont vérifiés, mais la
+réception dans le compte Google doit encore être contrôlée dans Temps réel.
+Les scripts de navigateur reprennent le proxy HTTP hérité pour les cibles
+distantes et conservent la vérification TLS ; les audits locaux restent directs.
+
+Un audit Lighthouse mobile supplémentaire sur **`https://samajaay.com/`**
+donne **90 en performance**, **100 en accessibilité**, **100 en bonnes pratiques**
+et **100 en SEO**. Le LCP est de **2 117,0 ms**, le FCP de 2 089,0 ms, le TBT
+de 219,5 ms et le CLS de **0** ; le benchmark CPU est de 1 882,5. Aucune
+requête Google Analytics ou Google Tag Manager n’est partie avant consentement.
+Rapports : `artifacts/traffic-seo-lighthouse-production-mobile.report.{json,html}`.
+
+Les objectifs de scores sont atteints dans cet audit de laboratoire en
+production. Il ne constitue pas une garantie sur tous les appareils ou réseaux :
+les mesures locales variables restent conservées, et l’INP ainsi que les Core
+Web Vitals de terrain nécessitent du trafic réel. Le navigateur de mesure
+utilise le proxy de l’environnement ; le profil mobile Lighthouse reste inchangé.
 
 ## Vérifications du code
 
