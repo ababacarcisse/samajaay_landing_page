@@ -72,7 +72,7 @@ Les noms des routes `/robots.txt`, `/sitemap.xml`, `/opengraph-image`, `/icon.pn
 
 Le JSON-LD contient `WebSite`, `SoftwareApplication` et `FAQPage`, rendus uniquement sur la page d’accueil. Les huit réponses de FAQ, dont les questions sur Alibaba et les paiements de groupage, proviennent de la même source que le contenu visible. La constante `productDescription` de `content.ts` alimente la description des métadonnées et des schémas. Aucune note, offre tarifaire ou statistique d’adoption n’est ajoutée. Cette description structurée ne garantit pas l’affichage d’un résultat enrichi : Google limite notamment la visibilité des résultats FAQ à certaines catégories de sites.
 
-`NEXT_PUBLIC_SITE_URL` doit refléter l’URL canonique publique réelle de cette landing. L’adresse `NEXT_PUBLIC_APP_URL` est une destination distincte sur le plan fonctionnel, même si les valeurs initiales correspondent au même domaine. La vérification des sources de production et l’avertissement sur la bascule de domaine sont documentés dans [sources.md](sources.md).
+`NEXT_PUBLIC_SITE_URL` désigne la canonique `https://samajaay.com/`. `NEXT_PUBLIC_APP_URL` désigne l’application vérifiée à `https://app.samajaay.com/`. Tous les CTA partagent `APP_URL` ; une ancienne valeur pointant à la racine de la landing bascule vers l’application pour éviter une boucle. Les sources sont documentées dans [sources.md](sources.md).
 
 ## Performance et mesure
 
@@ -92,7 +92,7 @@ La Metadata API produit les balises `google-site-verification` et `msvalidate.01
 
 Un serveur Next.js sur Vercel ou Node.js conserve le comportement attendu et l’optimisation d’images. Un export statique impose une stratégie d’images différente ; ne pas ajouter `output: "export"` sans adapter cette partie. La landing peut être intégrée à un dépôt existant après inspection de ses routes, composants, dépendances et règles ; cette étape n’a pas été simulée.
 
-L’application Flutter actuelle réside sur `https://samajaay.com/`. Avant d’y publier la landing, préparer et vérifier sa nouvelle destination, mettre à jour `NEXT_PUBLIC_APP_URL`, revalider les liens annexes et reconstruire. Sans cette préparation, les boutons pourraient pointer sur la landing elle-même.
+L’application Flutter est accessible à `https://app.samajaay.com/`, séparée de la landing. Cette destination a été ajoutée sur GitHub par le propriétaire et vérifiée en HTTP 200. Le lien de confidentialité utilise également ce sous-domaine. Après modification des variables publiques, reconstruire et vérifier les CTA.
 
 ## Skills et références consultés
 

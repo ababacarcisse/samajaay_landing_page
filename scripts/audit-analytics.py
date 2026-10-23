@@ -130,7 +130,7 @@ async def run(args):
         await click_cta_without_navigation(page)
         assert await event_count(page, "cta_click") == 1, "A consented CTA emits once"
         cta = next(command for command in await commands(page) if command[:2] == ["event", "cta_click"])
-        assert cta[2]["placement"] == "hero" and cta[2]["destination"].startswith("https://samajaay.com"), "Include meaningful CTA parameters"
+        assert cta[2]["placement"] == "hero" and cta[2]["destination"] == args.app_url, "Include the verified app destination and CTA placement"
         config = next(command for command in await commands(page) if command[:2] == ["config", measurement_id])
         assert config[2]["send_page_view"] is False and config[2]["allow_google_signals"] is False and config[2]["allow_ad_personalization_signals"] is False
         consent_updates = [command[2] for command in await commands(page) if command[:2] == ["consent", "update"]]
@@ -215,4 +215,5 @@ if __name__ == "__main__":
     parser.add_argument("--measurement-id", default=TEST_ID)
     parser.add_argument("--google-token", default=GOOGLE_TOKEN)
     parser.add_argument("--bing-token", default=BING_TOKEN)
+    parser.add_argument("--app-url", default="https://app.samajaay.com/")
     asyncio.run(run(parser.parse_args()))

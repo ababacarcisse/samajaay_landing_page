@@ -6,7 +6,7 @@ Ce document applique les recommandations pertinentes des skills SEO installés �
 
 `NEXT_PUBLIC_SITE_URL` désigne l’URL canonique publique de la landing. `NEXT_PUBLIC_APP_URL` désigne l’application que les boutons doivent ouvrir. Ces rôles sont différents.
 
-L’application Flutter officielle est actuellement accessible à `https://samajaay.com/`. Avant de remplacer cette racine par la landing, vérifier une autre destination réelle pour l’application et la renseigner dans `NEXT_PUBLIC_APP_URL`. Pour un hébergement distinct de la landing, conserver l’URL applicative vérifiée et définir `NEXT_PUBLIC_SITE_URL` sur l’adresse réelle de la landing. Reconstruire le projet après modification des variables.
+L’application Flutter officielle est accessible à `https://app.samajaay.com/`, destination ajoutée par le propriétaire sur GitHub puis vérifiée en HTTP 200. `NEXT_PUBLIC_APP_URL` utilise ce sous-domaine et la landing conserve `https://samajaay.com/` comme canonique. Le garde-fou de configuration empêche une ancienne variable pointant à la racine de la landing de créer une boucle de CTA. Reconstruire le projet après modification des variables.
 
 Vérifier ensuite que les liens du header, du hero, des fonctionnalités, du groupage et du CTA final ouvrent l’application. Revalider aussi le lien de confidentialité si l’application change d’origine. Une canonique ou une URL de connexion ne doit pas être inventée pour remplir la configuration.
 

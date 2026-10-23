@@ -15,7 +15,7 @@ import {
   Truck,
 } from "lucide-react";
 import { features, faqItems, steps, type FeatureIcon } from "@/lib/content";
-import { navigation, APP_URL } from "@/lib/config";
+import { navigation, APP_URL, PRIVACY_URL } from "@/lib/config";
 import { AppLink, BrandLogo, SectionLabel } from "./ui";
 import { Reveal } from "./reveal";
 import { AnalyticsPreferencesButton } from "./analytics-consent";
@@ -389,7 +389,7 @@ export function Footer() {
         <div className="sj-footer-bottom">
           <p>© {new Date().getFullYear()} SamaJaay. Tous droits réservés.</p>
           <AnalyticsPreferencesButton />
-          <a href="https://samajaay.com/#/privacy">
+          <a href={PRIVACY_URL}>
             Politique de confidentialité
             <ArrowUpRight size={16} aria-hidden="true" />
           </a>

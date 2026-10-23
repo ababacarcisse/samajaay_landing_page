@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
+import { APP_URL } from "@/lib/config";
 import type { ReactNode } from "react";
-
-const APP_CTA_URL = "https://app.samajaay.com/";
 
 export function BrandLogo() {
   return (
@@ -30,7 +29,7 @@ export function AppLink({
 }) {
   return (
     <a
-      href={APP_CTA_URL}
+      href={APP_URL}
       className={`button button-primary ${className}`}
       data-cta-location={location}
     >

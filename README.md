@@ -30,7 +30,7 @@ Le serveur de développement et le serveur de production écoutent sur `0.0.0.0`
 
 | Variable               | Utilisation                                                            | Valeur initiale vérifiée |
 | ---------------------- | ---------------------------------------------------------------------- | ------------------------ |
-| `NEXT_PUBLIC_APP_URL`  | Destination commune des boutons d’accès à l’application                | `https://samajaay.com/`  |
+| `NEXT_PUBLIC_APP_URL`  | Destination commune des boutons d’accès à l’application                | `https://app.samajaay.com/`  |
 | `NEXT_PUBLIC_SITE_URL` | URL publique de la landing : canonique, Open Graph, sitemap et JSON-LD | `https://samajaay.com/`  |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Identifiant public du flux web Google Analytics 4 | `G-2E8X0XGQX2`, fourni par le propriétaire |
 | `GOOGLE_SITE_VERIFICATION` | Jeton HTML d’une propriété Search Console de type préfixe d’URL | Vide, facultatif si DNS |
@@ -40,9 +40,9 @@ Ces variables publiques sont lues lors du build. Effectuer un nouveau build apr�
 
 L’adresse canonique choisie pour le domaine officiel est `https://samajaay.com/`. Une requête reçue par Next.js pour `www.samajaay.com` est redirigée en HTTP 308 vers le même chemin sur `samajaay.com`, en conservant les paramètres. L’hébergement doit desservir les deux noms avec un certificat HTTPS valide ; le code ne modifie ni le DNS ni l’hébergement actuel.
 
-**L’application officielle est actuellement servie à la racine de `https://samajaay.com/`.** Déployer cette landing à cette même racine sans déplacer l’application ferait revenir les CTA sur la landing. Avant une telle bascule, déplacer l’application vers une destination existante et vérifiée, puis renseigner `NEXT_PUBLIC_APP_URL`. Pour un hébergement distinct, conserver l’adresse actuelle de l’application et régler `NEXT_PUBLIC_SITE_URL` sur l’adresse réelle de la landing. Ne pas inventer de route `/login` ou de sous-domaine applicatif.
+**L’application officielle est accessible à `https://app.samajaay.com/`**, destination ajoutée par le propriétaire sur GitHub puis vérifiée en HTTP 200 avec son bootstrap Flutter. La landing conserve `https://samajaay.com/` comme canonique. Tous les CTA utilisent la constante `APP_URL`. Une ancienne valeur `NEXT_PUBLIC_APP_URL=https://samajaay.com/`, ou une destination identique à la landing, est remplacée par l’adresse applicative vérifiée pour éviter une boucle. Mettre aussi les variables d’hébergement à jour pour refléter ces destinations.
 
-Le lien de confidentialité pointe vers `https://samajaay.com/#/privacy`, route vérifiée dans l’application actuelle : le revalider si l’application change d’adresse. Les coordonnées et la provenance des assets figurent dans [docs/sources.md](docs/sources.md).
+Le lien de confidentialité pointe vers `https://app.samajaay.com/#/privacy` ; le bundle Flutter public du sous-domaine contient la route et le contenu de confidentialité. Les coordonnées et la provenance des assets figurent dans [docs/sources.md](docs/sources.md).
 
 ## Contenu et composants
 

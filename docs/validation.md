@@ -11,6 +11,13 @@ Le build final intègre l’identifiant public fourni par le propriétaire,
 validation DNS de sa propriété Search Console. Aucun compte distant ni DNS
 n’a été modifié ici, et le sitemap n’a pas été soumis dans cette console.
 
+Les modifications parallèles du propriétaire sur GitHub ont été fusionnées et
+conservées. L’application `https://app.samajaay.com/` répond en HTTP 200 avec
+son bootstrap Flutter ; son bundle contient la route de confidentialité.
+Tous les CTA partagent cette destination, et un garde-fou remplace l’ancienne
+variable pointant à la racine de la landing pour éviter une boucle. Le lien
+de confidentialité utilise également le sous-domaine applicatif.
+
 - `npm run lint`, `npm run typecheck`, `npm run build` et `git diff --check` : réussite.
 - Audit navigateur répété à 360, 390, 430, 768, 1024 et 1440 px : aucun
   débordement, aucune violation axe, aucune erreur JavaScript ; onglets, FAQ,
@@ -216,10 +223,9 @@ audits séquentiellement. `artifacts/` est ignoré par Git.
 
 ## Avant mise en ligne
 
-`samajaay.com` héberge actuellement l’application Flutter officielle. Avant d’y
-installer la landing, vérifier une autre destination réelle pour l’application
-et renseigner `NEXT_PUBLIC_APP_URL`. `NEXT_PUBLIC_SITE_URL` doit correspondre à
-l’adresse publique de la landing pour sa canonique et son sitemap.
+L’application Flutter utilise l’adresse vérifiée `https://app.samajaay.com/`.
+Conserver `NEXT_PUBLIC_APP_URL` sur ce sous-domaine et `NEXT_PUBLIC_SITE_URL`
+sur `https://samajaay.com/` pour la landing, sa canonique et son sitemap.
 
 Les coordonnées et liens officiels proviennent de `docs/sources.md`. Les skills
 installés et leurs noms réels sont recensés dans `docs/skills-installation.md`.

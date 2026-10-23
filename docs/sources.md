@@ -4,12 +4,12 @@ Vérification du 23 octobre 2026. Aucun témoignage, nombre d’utilisateurs ou 
 
 ## Production SamaJaay
 
-- Application : https://samajaay.com/ — HTTP 200, application Flutter avec `base href="/"`, `flutter_bootstrap.js` et `main.dart.js`.
+- Application : https://app.samajaay.com/ — destination ajoutée par le propriétaire sur GitHub, puis vérifiée en HTTP 200 avec `flutter_bootstrap.js`, titre « SamaJaay » et `main.dart.js`. La première exploration utilisait la racine de https://samajaay.com/ ; les CTA ont été harmonisés vers le sous-domaine applicatif.
 - Logo officiel : https://samajaay.com/assets/assets/branding/app_bar.png — PNG 720 × 174, référencé par `assets/AssetManifest.bin.json` ; copie locale `public/brand/logo.png`.
 - Favicon officiel : https://samajaay.com/favicon.png — PNG 48 × 48 ; copie locale `src/app/icon.png`.
 - Icône Apple officielle : https://samajaay.com/icons/apple-touch-icon.png — PNG 180 × 180 ; copie locale `src/app/apple-icon.png`.
 - Contact : https://samajaay.com/#/contact. Le routeur du bundle public `main.dart.js` déclare `/contact` ; son composant de contact affiche `cissedev5@gmail.com`, le téléphone / WhatsApp `+221 77 932 77 62` et `www.cissesolutions.cloud`. URI : `mailto:cissedev5@gmail.com`, `tel:+221779327762`, https://wa.me/221779327762.
-- Confidentialité : https://samajaay.com/#/privacy. Le routeur public déclare explicitement `A.ck(new A.bzM(),"/privacy",null)`. Le composant associé contient « Politique de confidentialité », « Cisse Solutions — SamaJaay, au Sénégal » et une mise à jour du 19 octobre 2026. Le mode hash est confirmé par `groupage-links.js`. Une réponse HTTP 200 seule sur une route arbitraire ne constitue pas une preuve : le serveur sert également le fallback Flutter.
+- Confidentialité : https://app.samajaay.com/#/privacy. Le bundle Flutter public du sous-domaine contient la route `/privacy` et le contenu de confidentialité. Lors de la première exploration, le routeur déclarait `A.ck(new A.bzM(),"/privacy",null)` ; le composant associé contenait « Politique de confidentialité », « Cisse Solutions — SamaJaay, au Sénégal » et une mise à jour du 19 octobre 2026. Le mode hash était confirmé par `groupage-links.js`. Une réponse HTTP 200 seule sur une route arbitraire ne constitue pas une preuve : le serveur sert également le fallback Flutter.
 - Aucune page distincte de mentions légales ni aucun réseau social officiel n’a été vérifié.
 
 ## Captures de l’application fournies par l’utilisateur
@@ -49,4 +49,4 @@ Aucune image nouvelle n’est remplacée par une capture fictive ou une reconsti
 
 ## Limite de déploiement
 
-L’application est actuellement servie à la racine de `https://samajaay.com/`. La landing doit être hébergée à une autre origine, ou l’application déplacée vers une URL réelle et vérifiée avant de remplacer cette racine. Configurer alors `NEXT_PUBLIC_APP_URL` pour éviter une boucle des CTA. Le choix de présenter le groupage dans la refonte repose sur la demande explicite de l’utilisateur et sur les nouveaux écrans fournis, décrits ci-dessus. La simple présence de code dans le bundle n’est pas utilisée seule comme preuve d’un parcours de production complet.
+L’application vérifiée utilise `https://app.samajaay.com/` et la landing `https://samajaay.com/`. `NEXT_PUBLIC_APP_URL` et le garde-fou de configuration conservent cet accès pour tous les CTA, y compris lorsqu’une ancienne variable d’hébergement désigne encore la racine de la landing. Le choix de présenter le groupage dans la refonte repose sur la demande explicite de l’utilisateur et sur les nouveaux écrans fournis, décrits ci-dessus. La simple présence de code dans le bundle n’est pas utilisée seule comme preuve d’un parcours de production complet.
