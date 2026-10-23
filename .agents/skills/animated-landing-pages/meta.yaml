@@ -1,0 +1,19 @@
+name: animated-landing-pages
+version: 0.1.0
+category: domain
+summary: Motion-first landing page with AI-generated visuals — create scroll-driven animations and interactive landing experiences.
+summary_vi: "Landing page motion-first với AI-generated visuals — tạo scroll-driven animations và interactive landing experiences."
+triggers:
+  - create landing page
+  - motion landing page
+  - animated hero
+  - scroll animation
+inputs:
+  - source material
+  - output requirements
+outputs:
+  - final output
+  - process artifacts
+constraints:
+  - follows domain-specific workflow
+related_skills: []

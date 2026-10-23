@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "skills": {
+    "animated-landing-pages": {
+      "source": "../../tmp/samajaay-skills-install/sources/anionzo--skill",
+      "sourceType": "local",
+      "computedHash": "165bb28c5b475ad8e36feb262ea8bd2874d5f810260ec6be76dd0613bfd24f27"
+    },
+    "brand-voice-to-ui-copy": {
+      "source": "../../tmp/samajaay-skills-install/sources/TheGoat395--Codex-Skills",
+      "sourceType": "local",
+      "computedHash": "6e4caf1f96fef1eec56c4c6164267926856350bec5fbadf2a793d3eced9dc526"
+    },
+    "copywriter": {
+      "source": "../../tmp/samajaay-skills-install/sources/vlados--lawdiff",
+      "sourceType": "local",
+      "computedHash": "54d88fa1ac787f97efd86c3cfab3558543601dcb407817b646d72bf15fedaa3a"
+    },
+    "design-motion-principles": {
+      "source": "../../tmp/samajaay-skills-install/sources/TheGoat395--Codex-Skills",
+      "sourceType": "local",
+      "computedHash": "987f0cf2e109509a9d6ce585fd700ecab8008904a126ba164ee618c392a45a29"
+    },
+    "landing-page-design": {
+      "source": "../../tmp/samajaay-skills-install/sources/Hans3010--Hanstec-Automate",
+      "sourceType": "local",
+      "computedHash": "c489ece3f049aa26c78154d1f67aa5e2b8342216e5f6acf07455cba56e10c19f"
+    },
+    "local-seo": {
+      "source": "../../tmp/samajaay-skills-install/sources/huifer--claude-code-seo",
+      "sourceType": "local",
+      "computedHash": "69a9a2b1592405639f5e83fdf6eb2d4fd9a84230af8b905800e2c69e3c2b47ae"
+    },
+    "metadata-optimizer": {
+      "source": "../../tmp/samajaay-skills-install/sources/huifer--claude-code-seo",
+      "sourceType": "local",
+      "computedHash": "a7ac2ecfff11efcce824eb955e4293e41b0c0f2c72bba7480d4bc8aab2c7a387"
+    },
+    "mobile-design": {
+      "source": "manutej/luxor-claude-marketplace",
+      "sourceType": "github",
+      "skillPath": "plugins/luxor-frontend-essentials/skills/mobile-design/SKILL.md",
+      "computedHash": "990cc65904ce594f7be796c14ac55453a8cfcd5c91863a600d57c3e7a6896af1"
+    },
+    "off-page-seo": {
+      "source": "huifer/claude-code-seo",
+      "sourceType": "github",
+      "skillPath": "skills/off-page-seo/SKILL.md",
+      "computedHash": "76f6343730948886bd18ba1366f5b1288ae63fb7851aed75087c29b0c2adbfd0"
+    },
+    "seo-auditor": {
+      "source": "../../tmp/samajaay-skills-install/sources/huifer--claude-code-seo",
+      "sourceType": "local",
+      "computedHash": "d5ef82e131abc6a7aef83cd1747f6f8672310ae5d1d4c7ee4b934aa5f9f39eb8"
+    },
+    "seo-technical-qa": {
+      "source": "../../tmp/samajaay-skills-install/sources/TheGoat395--Codex-Skills",
+      "sourceType": "local",
+      "computedHash": "84be6f3ab7133a8efcb224165d2475e94deecbd90a370b6bd8bb3a3ed260d442"
+    },
+    "structured-data": {
+      "source": "../../tmp/samajaay-skills-install/sources/huifer--claude-code-seo",
+      "sourceType": "local",
+      "computedHash": "4882a13a9a83594ba93ba32d0ef5bc3011ef0c24717a3fb4a21941deeef90317"
+    }
+  }
+}

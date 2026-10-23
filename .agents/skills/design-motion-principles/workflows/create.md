@@ -1,0 +1,79 @@
+# Workflow: Create Mode
+
+Build interactive components with purposeful motion. Light discovery, then generate against the cookbook.
+
+## Required Reading
+
+Read before generating:
+1. `references/motion-cookbook.md` — read the sections for the selected effect; other recipes stay unloaded
+2. `references/accessibility.md` — `prefers-reduced-motion` is mandatory in everything you generate
+3. `references/creation-gotchas.md` — Common implementation failure modes when writing motion; self-check against these
+
+---
+
+## STEP 1: Light Discovery
+
+Establish two things — project context and designer weighting — before generating. Infer from available context first.
+
+### Infer First, Ask Second
+
+Check what you can already see:
+- **The request** — what component, what interaction, what stack (React / Framer Motion / CSS / HTML)?
+- **Applicable project instructions, package.json and affected components** — project type and existing animation conventions; reuse unchanged context
+
+### Propose Context + Weighting
+
+Map the project type to a perspective weighting using the Context-to-Perspective Mapping table in SKILL.md. State your inference in one short block:
+
+```
+Building: [what — e.g. "a notification toast, React + Framer Motion"]
+Project context: [inferred — e.g. "productivity SaaS dashboard"]
+Proposed weighting: Primary [Designer] · Secondary [Designer]
+```
+
+Use current user direction and adequate existing context without asking again. State reversible assumptions and proceed. Ask only when a consequential missing choice actually blocks implementation; weighting itself is not an approval boundary.
+
+---
+
+## STEP 2: Load Weighted Knowledge
+
+Based on the context-supported weighting, read the relevant designer file(s):
+- **Read `references/emil-kowalski.md`** if Emil is primary/secondary — restraint, the frequency rule, when NOT to animate
+- **Read `references/jakub-krehel.md`** if Jakub is primary/secondary — production polish judgment, subtlety bar
+- **Read `references/jhey-tompkins.md`** if Jhey is primary/secondary — playful expression, what motion could become
+
+The designer files give you the **judgment** (should this animate, what feel). The cookbook gives you the **code**.
+
+If the component involves complex or numerous animations, also read `references/performance.md`.
+
+---
+
+## STEP 3: Generate
+
+Build the component. Apply, in order:
+
+1. **The frequency gate (Emil)** — Should this animate at all? High-frequency or keyboard-initiated interactions get minimal or no motion. Decide before adding anything.
+2. **Recipes from the cookbook** — Use the weighted designer's patterns. Choose instant, opacity-only or movement to fit the purpose. Blur is optional and measured. Exits usually carry less visual weight; choose easing/springs for the actual brand and behavior.
+3. **Accessibility** — Every animation ships with `prefers-reduced-motion` handling, in the same code. No exceptions, no follow-up.
+4. **Performance** — Prefer transform/opacity; filter/clip effects can paint and must be measured. Use measured layout/FLIP or bounded size animation when it serves content flow; avoid layout thrash.
+5. **Context-appropriate timing** — Use the weighted ranges as starting points: under 300ms for frequent productivity actions, 200–500ms for some transitions, longer expressive scenes when earned. The actual brief, interruption, preference and measured consequence control.
+
+---
+
+## STEP 4: Self-Check
+
+Check applicable implementation risks from `references/creation-gotchas.md`. Run and inspect the affected interaction, including rapid reversal, keyboard/focus and reduced motion; repair observed defects and repeat the affected check. A matching code pattern alone is not a defect. If runtime inspection is unavailable, state that boundary and complete feasible source checks.
+
+Then briefly tell the user the motion decisions you made and why — which designer weighting drove the timing, easing, and whether something was deliberately left un-animated.
+
+---
+
+## Success Criteria
+
+- [ ] Context and weighting grounded in user direction or available evidence
+- [ ] Frequency gate applied — motion is purposeful, not decorative-by-default
+- [ ] Recipes drawn from the cookbook, matched to the designer weighting
+- [ ] `prefers-reduced-motion` handled in all generated motion
+- [ ] Rendering cost measured where needed; layout/effect exceptions justified
+- [ ] Code self-checked against creation-gotchas.md
+- [ ] Motion decisions explained to the user

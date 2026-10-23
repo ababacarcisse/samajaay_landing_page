@@ -1,0 +1,265 @@
+.groupage-section {
+  padding: 80px 0;
+  background: var(--surface, #e7f3ea);
+  color: var(--ink, #10261c);
+}
+
+.groupage-heading {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.groupage-heading > p {
+  max-width: 45ch;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.groupage-layout {
+  display: grid;
+  gap: 32px;
+  align-items: stretch;
+}
+
+.groupage-kicker {
+  margin: 0 0 32px;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--muted, #52665a);
+}
+
+.groupage-steps,
+.groupage-steps ul,
+.groupage-statuses {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.groupage-steps {
+  display: grid;
+  gap: 36px;
+}
+
+.groupage-steps h3 {
+  margin: 0 0 10px;
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.groupage-steps p {
+  max-width: 51ch;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.groupage-steps ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-top: 15px;
+}
+
+.groupage-steps ul li {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted, #52665a);
+}
+
+.groupage-steps ul li svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--deep, #052e20);
+}
+
+.groupage-follow {
+  display: flex;
+  flex-direction: column;
+  padding: 30px 26px;
+  background: var(--deep, #052e20);
+  color: var(--paper, #f8faf9);
+}
+
+.groupage-follow-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.groupage-follow h3 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.groupage-follow > p {
+  margin: 20px 0 34px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #d3e5d9;
+}
+
+.groupage-statuses {
+  display: grid;
+  gap: 26px;
+}
+
+.groupage-statuses li {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  position: relative;
+}
+
+.groupage-statuses li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 28px;
+  top: 34px;
+  left: 17px;
+  background: #719c7f;
+}
+
+.groupage-statuses li > span {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  background: #d7eddd;
+  color: #052e20;
+  border-radius: 50%;
+}
+
+.groupage-statuses strong {
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.groupage-participants {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 42px;
+  padding-top: 10px;
+}
+
+.groupage-participants svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.groupage-participants p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #d3e5d9;
+}
+
+.groupage-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 26px;
+  margin-top: 42px;
+}
+
+.groupage-money {
+  max-width: 66ch;
+}
+
+.groupage-money p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.groupage-money p + p {
+  margin-top: 7px;
+  color: var(--muted, #52665a);
+}
+
+.groupage-money strong {
+  font-weight: 700;
+}
+
+.groupage-bottom .button {
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .groupage-section {
+    padding: 112px 0;
+  }
+
+  .groupage-heading {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: end;
+    gap: 54px;
+    margin-bottom: 64px;
+  }
+
+  .groupage-layout {
+    grid-template-columns: 1.2fr 1fr;
+    gap: 54px;
+  }
+
+  .groupage-steps {
+    gap: 42px;
+  }
+
+  .groupage-follow {
+    padding: 40px 32px;
+  }
+
+  .groupage-follow h3 {
+    font-size: 38px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .groupage-heading {
+    grid-template-columns: 1.35fr 1fr;
+    gap: 96px;
+  }
+
+  .groupage-layout {
+    grid-template-columns: 1.35fr 1fr;
+    gap: 96px;
+  }
+
+  .groupage-steps p,
+  .groupage-follow > p,
+  .groupage-participants p,
+  .groupage-money p {
+    font-size: 18px;
+  }
+
+  .groupage-follow {
+    padding: 46px 40px;
+  }
+
+  .groupage-follow h3 {
+    font-size: 42px;
+  }
+
+  .groupage-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 54px;
+    margin-top: 56px;
+  }
+}

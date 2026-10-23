@@ -1,0 +1,135 @@
+# SamaJaay — Landing page
+
+Refonte de la landing page en français pour l’application de gestion commerciale SamaJaay : Next.js App Router, React, TypeScript strict, Tailwind CSS et Motion for React. La version revue privilégie les textes lisibles, le contraste, les captures authentiques et une présentation du groupage fondée sur les écrans fournis par l’utilisateur.
+
+Le dossier `/workspace` ne contenait aucun dépôt applicatif lors de la préparation. Ce projet indépendant se trouve dans `/workspace/samajaay` ; son intégration à un dépôt existant n’a donc pas été effectuée. L’application Flutter de production n’a pas été modifiée.
+
+## Lancer le projet
+
+Prérequis : Node.js 20.9 ou supérieur et npm.
+
+```bash
+cd /workspace/samajaay
+npm ci
+cp .env.example .env.local
+npm run dev
+```
+
+La page est disponible à `http://localhost:3000`. Pour exécuter la version de production :
+
+```bash
+npm run lint
+npm run typecheck
+npm run build
+npm run start
+```
+
+Le serveur de développement et le serveur de production écoutent sur `0.0.0.0`. Utiliser le contrôle d’accès de l’hébergement si leur accès doit être limité.
+
+## Configurer les destinations avant déploiement
+
+| Variable               | Utilisation                                                            | Valeur initiale vérifiée |
+| ---------------------- | ---------------------------------------------------------------------- | ------------------------ |
+| `NEXT_PUBLIC_APP_URL`  | Destination commune des boutons d’accès à l’application                | `https://samajaay.com/`  |
+| `NEXT_PUBLIC_SITE_URL` | URL publique de la landing : canonique, Open Graph, sitemap et JSON-LD | `https://samajaay.com/`  |
+
+Ces variables publiques sont lues lors du build. Effectuer un nouveau build après modification. Elles n’accueillent aucun secret. Les valeurs HTTP(S) sont validées dans `src/lib/config.ts`.
+
+**L’application officielle est actuellement servie à la racine de `https://samajaay.com/`.** Déployer cette landing à cette même racine sans déplacer l’application ferait revenir les CTA sur la landing. Avant une telle bascule, déplacer l’application vers une destination existante et vérifiée, puis renseigner `NEXT_PUBLIC_APP_URL`. Pour un hébergement distinct, conserver l’adresse actuelle de l’application et régler `NEXT_PUBLIC_SITE_URL` sur l’adresse réelle de la landing. Ne pas inventer de route `/login` ou de sous-domaine applicatif.
+
+Le lien de confidentialité pointe vers `https://samajaay.com/#/privacy`, route vérifiée dans l’application actuelle : le revalider si l’application change d’adresse. Les coordonnées et la provenance des assets figurent dans [docs/sources.md](docs/sources.md).
+
+## Contenu et composants
+
+La page comprend un hero vert profond à texte blanc avec un véritable écran de l’application, le problème des chiffres dispersés, une découverte interactive du produit, les six domaines de gestion, une section groupage, les trois étapes de prise en main, la section Sénégal/FCFA, huit questions fréquentes, le CTA final et le pied de page. Les paragraphes courants emploient une échelle de 16–18 px, avec des notes autour de 13–14 px et des cibles de menu de 48 px.
+
+- `src/app/page.tsx` compose les sections avec un contenu rendu côté serveur.
+- `src/lib/content.ts` centralise les fonctionnalités, les étapes du groupage, les captures, les étapes de prise en main et les huit réponses de FAQ. Sa constante `productDescription` est partagée par les métadonnées et le JSON-LD.
+- `src/lib/imported-screens.json` contient les références aux captures complémentaires effectivement importées ; sa valeur initiale est `[]`.
+- `src/lib/config.ts` centralise les URL et la navigation.
+- `src/components/ui.tsx` fournit `BrandLogo`, `AppLink`, `SectionLabel` et `PhoneMockup`.
+- `GroupageSection` présente le suivi manuel des achats groupés.
+- `Header`, `ProductDemo`, `Reveal` et `AnalyticsBridge` contiennent les interactions nécessaires. `ProductDemo` reçoit par props les cinq captures initiales fusionnées avec le manifeste d’import.
+- `src/app/globals.css`, `src/components/sections.css` et `src/components/groupage.css` portent les styles et règles responsive.
+
+Le smartphone est une composition CSS autour des fichiers JPEG originaux. Le recadrage CSS retire les barres système Android sans réécrire l’interface ni ses chiffres. Les montants visibles illustrent un exemple d’activité. Aucun tarif, faux avis ou nombre d’utilisateurs n’est inventé.
+
+La section groupage explique les produits, quantités, prix fournisseur, frais, marge, participations et statuts montrés dans les nouvelles captures. Alibaba et les autres plateformes sont des sources d’achat évoquées : aucune connexion automatique à leur API n’est revendiquée. Les informations et les paiements reçus sont renseignés par l’utilisateur ; SamaJaay ne reçoit et ne garde aucun argent.
+
+Les animations sont ponctuelles : `Reveal` emploie une transformation et une variation d’opacité avec une courbe ease-out, et les transitions de capture durent 250 ms. La navigation des onglets au clavier désactive ces transitions ; la préférence de réduction des mouvements est respectée.
+
+## Ajouter les nouvelles captures réelles
+
+Les seize images WhatsApp sont visibles dans la conversation, mais leurs fichiers `C:\...` ne sont pas accessibles depuis l’environnement Linux. Le manifeste reste vide tant qu’un import de fichiers réels n’a pas eu lieu ; aucune capture n’a été recréée.
+
+Sur l’ordinateur qui possède les images, depuis le dossier du projet :
+
+```powershell
+node scripts/import-screens.mjs --from "C:\Users\HP\Downloads"
+npm run build
+```
+
+Adapter `--from` au dossier contenant les fichiers WhatsApp originaux. Le script copie les JPEG reconnus sans modifier leurs octets et sélectionne jusqu’à dix écrans complémentaires, ajoutés aux cinq captures initiales. Voir [docs/import-captures.md](docs/import-captures.md) pour les noms attendus, les imports partiels et les protections contre l’écrasement.
+
+## Skills et direction artistique
+
+Les collections demandées et les noms de skills réellement présents ont été installés et documentés : [43 skills de travail](docs/skills-installation.md), dont 12 dans le projet et 31 dans l’environnement global. Ils ne constituent pas 43 dépendances runtime et ne sont pas chargés par les visiteurs. Les ressources natives ou de maintenance sans rapport avec cette landing ne sont pas présentées comme utilisées dans son interface.
+
+La refonte applique les recommandations pertinentes de motion, lisibilité, design et copywriting, avec une direction éditoriale `printed-annual` adaptée à l’identité verte. Voir [docs/refonte-design.md](docs/refonte-design.md) et le [plan SEO](docs/seo-plan.md).
+
+Les détails de conception, d’accessibilité et de référencement sont documentés dans [docs/architecture.md](docs/architecture.md).
+
+## Mesure des CTA et consentement
+
+Aucun cookie, identifiant analytics, script de suivi ni appel vers une plateforme de mesure n’est installé par défaut. Un adaptateur optionnel fourni par l’hébergement peut implémenter cette interface :
+
+```ts
+window.samajaayAnalytics = {
+  hasConsent: () => votreGestionnaireDeConsentement.autoriseLaMesure(),
+  track: (name, data) => votreOutilDeMesure.envoyer(name, data),
+};
+```
+
+Ce fragment décrit le contrat ; `votreGestionnaireDeConsentement` et `votreOutilDeMesure` doivent être remplacés par l’intégration réelle. `AnalyticsBridge` appelle `track("cta_click", { placement, destination })` seulement si `hasConsent()` renvoie `true`. Il ne conserve pas les clics précédant le consentement. Une erreur de l’adaptateur n’interrompt pas la navigation.
+
+## Vérifications et artefacts
+
+```bash
+npm run lint
+npm run typecheck
+npm run build
+```
+
+Le script `scripts/audit.py` complète les vérifications de la page servie et les rapports/captures de contrôle sont regroupés dans `artifacts/` lorsqu’ils sont produits. Consulter les résultats effectivement présents dans ce dossier et le compte rendu de livraison ; cette documentation n’attribue aucun score Lighthouse non mesuré.
+
+Pour reproduire l’audit navigateur, garder `npm run start` actif dans un autre terminal. Les outils suivants sont réservés aux contrôles et ne sont pas des dépendances de production :
+
+```bash
+python -m venv /tmp/samajaay-python-qa
+/tmp/samajaay-python-qa/bin/pip install playwright
+/tmp/samajaay-python-qa/bin/python -m playwright install chromium
+npm install --prefix /tmp/samajaay-qa axe-core lighthouse
+/tmp/samajaay-python-qa/bin/python scripts/audit.py
+```
+
+Le script accepte `--chromium /chemin/vers/chromium` pour un navigateur système et `--axe /chemin/vers/axe.min.js`. Pour Lighthouse, exécuter les audits séparément afin d’éviter une concurrence CPU :
+
+```bash
+/tmp/samajaay-qa/node_modules/.bin/lighthouse http://localhost:3000 \
+  --only-categories=performance,accessibility,best-practices,seo \
+  --output=json --output=html --output-path=artifacts/lighthouse-mobile
+```
+
+Ajouter `--preset=desktop` pour le bureau. Dans cet environnement Linux isolé, les commandes de mesure utilisent aussi `CHROME_PATH=/usr/bin/chromium` et `--chrome-flags='--no-sandbox --headless --disable-dev-shm-usage'`.
+
+Les largeurs de référence sont 360, 390, 430, 768, 1024 et 1440 px. Vérifier aussi le clavier, le menu mobile, les onglets correspondant aux captures réellement présentes, la FAQ, le groupage, la réduction des animations, les liens externes et le rendu sans JavaScript. Les Core Web Vitals terrain nécessitent ensuite une mesure sur le trafic réel ; un audit local ne garantit pas les résultats en production.
+
+Les résultats de livraison et leurs limites sont consignés dans [docs/validation.md](docs/validation.md).
+
+## Déployer
+
+**Vercel :** importer le dépôt contenant ce dossier, sélectionner Next.js, définir le répertoire racine si nécessaire, configurer les deux variables publiques et lancer `npm run build`. Vérifier la destination applicative avant d’affecter le domaine officiel.
+
+**Serveur Node.js :** exécuter `npm ci`, `npm run build`, puis `npm run start` derrière un reverse proxy HTTPS et un superviseur de processus. Conserver `.next`, `public`, les dépendances de production et les fichiers de configuration nécessaires au serveur Next.js.
+
+La configuration conserve l’optimisation d’images de Next.js en AVIF/WebP. Un export statique naïf avec `output: "export"` ne convient pas au chargeur d’images par défaut : prévoir alors explicitement un chargeur adapté ou une chaîne de préoptimisation, puis vérifier à nouveau les performances. Aucun déploiement sur le domaine de production ni remplacement de l’application existante n’est impliqué par ces instructions.
