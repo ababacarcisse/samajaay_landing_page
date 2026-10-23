@@ -1,6 +1,7 @@
 @import "tailwindcss" source("../");
 @import "../components/sections.css";
 @import "../components/groupage.css";
+@import "../components/analytics-consent.css";
 
 @theme inline {
   --color-brand: #16a34a;

@@ -32,8 +32,13 @@ Le serveur de développement et le serveur de production écoutent sur `0.0.0.0`
 | ---------------------- | ---------------------------------------------------------------------- | ------------------------ |
 | `NEXT_PUBLIC_APP_URL`  | Destination commune des boutons d’accès à l’application                | `https://samajaay.com/`  |
 | `NEXT_PUBLIC_SITE_URL` | URL publique de la landing : canonique, Open Graph, sitemap et JSON-LD | `https://samajaay.com/`  |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Identifiant public du flux web Google Analytics 4 | `G-2E8X0XGQX2`, fourni par le propriétaire |
+| `GOOGLE_SITE_VERIFICATION` | Jeton HTML d’une propriété Search Console de type préfixe d’URL | Vide, facultatif si DNS |
+| `BING_SITE_VERIFICATION` | Jeton HTML Bing Webmaster Tools | Vide, facultatif |
 
 Ces variables publiques sont lues lors du build. Effectuer un nouveau build après modification. Elles n’accueillent aucun secret. Les valeurs HTTP(S) sont validées dans `src/lib/config.ts`.
+
+L’adresse canonique choisie pour le domaine officiel est `https://samajaay.com/`. Une requête reçue par Next.js pour `www.samajaay.com` est redirigée en HTTP 308 vers le même chemin sur `samajaay.com`, en conservant les paramètres. L’hébergement doit desservir les deux noms avec un certificat HTTPS valide ; le code ne modifie ni le DNS ni l’hébergement actuel.
 
 **L’application officielle est actuellement servie à la racine de `https://samajaay.com/`.** Déployer cette landing à cette même racine sans déplacer l’application ferait revenir les CTA sur la landing. Avant une telle bascule, déplacer l’application vers une destination existante et vérifiée, puis renseigner `NEXT_PUBLIC_APP_URL`. Pour un hébergement distinct, conserver l’adresse actuelle de l’application et régler `NEXT_PUBLIC_SITE_URL` sur l’adresse réelle de la landing. Ne pas inventer de route `/login` ou de sous-domaine applicatif.
 
@@ -79,9 +84,15 @@ La refonte applique les recommandations pertinentes de motion, lisibilité, desi
 
 Les détails de conception, d’accessibilité et de référencement sont documentés dans [docs/architecture.md](docs/architecture.md).
 
-## Mesure des CTA et consentement
+## Mesure du trafic, CTA et référencement
 
-Aucun cookie, identifiant analytics, script de suivi ni appel vers une plateforme de mesure n’est installé par défaut. Un adaptateur optionnel fourni par l’hébergement peut implémenter cette interface :
+L’intégration utilise l’identifiant public fourni par le propriétaire, `G-2E8X0XGQX2`. `NEXT_PUBLIC_GA_MEASUREMENT_ID` permet de le remplacer au build ; une valeur explicitement vide désactive la mesure et son bandeau. Si la variable est absente, l’identifiant fourni reste utilisé. Le visiteur peut accepter ou refuser la mesure et rouvrir ce choix depuis le footer. Le script Google est chargé uniquement après acceptation ; les clics précédents ne sont pas conservés.
+
+Après consentement, GA4 reçoit une vue de page et les événements `cta_click` avec les paramètres `placement` et `destination`. La révocation bloque les événements suivants et supprime au mieux les cookies GA accessibles sur le domaine courant. Aucun outil de mesure publicitaire n’est ajouté. Le guide [Mesure et référencement](docs/mesure-et-referencement.md) décrit les comptes à créer, les rapports utiles et les vérifications en production.
+
+Le propriétaire a confirmé la validation DNS du domaine dans Search Console le 23 octobre 2026 (« You are a verified owner »). Aucune balise Google supplémentaire n’est nécessaire pour cette propriété de domaine. Après déploiement, soumettre `https://samajaay.com/sitemap.xml` dans cette propriété et vérifier son traitement. Le jeton facultatif `GOOGLE_SITE_VERIFICATION` reste disponible pour une éventuelle propriété préfixe d’URL ; `BING_SITE_VERIFICATION` ajoute aussi la balise Bing lorsqu’un jeton réel est fourni. Le projet n’a ni créé les propriétés ni soumis le sitemap dans leurs consoles.
+
+Lorsque GA4 est explicitement désactivé, un adaptateur fourni par l’hébergement peut toujours implémenter cette interface :
 
 ```ts
 window.samajaayAnalytics = {
@@ -90,7 +101,7 @@ window.samajaayAnalytics = {
 };
 ```
 
-Ce fragment décrit le contrat ; `votreGestionnaireDeConsentement` et `votreOutilDeMesure` doivent être remplacés par l’intégration réelle. `AnalyticsBridge` appelle `track("cta_click", { placement, destination })` seulement si `hasConsent()` renvoie `true`. Il ne conserve pas les clics précédant le consentement. Une erreur de l’adaptateur n’interrompt pas la navigation.
+Ce fragment décrit le contrat ; `votreGestionnaireDeConsentement` et `votreOutilDeMesure` doivent être remplacés par l’intégration réelle. `AnalyticsBridge` appelle l’adaptateur seulement si `hasConsent()` renvoie `true`. Une erreur de l’adaptateur n’interrompt pas la navigation.
 
 ## Vérifications et artefacts
 
@@ -112,7 +123,16 @@ npm install --prefix /tmp/samajaay-qa axe-core lighthouse
 /tmp/samajaay-python-qa/bin/python scripts/audit.py
 ```
 
-Le script accepte `--chromium /chemin/vers/chromium` pour un navigateur système et `--axe /chemin/vers/axe.min.js`. Pour Lighthouse, exécuter les audits séparément afin d’éviter une concurrence CPU :
+Le script accepte `--chromium /chemin/vers/chromium` pour un navigateur système et `--axe /chemin/vers/axe.min.js`.
+
+L’audit GA4 intercepte le tag et les requêtes Google, sans envoyer de visites de test. Avec le build actuel et sans jeton HTML de vérification :
+
+```bash
+python scripts/audit-analytics.py --chromium /usr/bin/chromium \
+  --measurement-id G-2E8X0XGQX2 --google-token '' --bing-token ''
+```
+
+Les valeurs attendues peuvent être remplacées pour un build isolé ; voir l’en-tête du script. L’audit vérifie le code de consentement, pas la réception dans le service GA4 distant. Pour Lighthouse, exécuter les audits séparément afin d’éviter une concurrence CPU :
 
 ```bash
 /tmp/samajaay-qa/node_modules/.bin/lighthouse http://localhost:3000 \
@@ -128,7 +148,7 @@ Les résultats de livraison et leurs limites sont consignés dans [docs/validati
 
 ## Déployer
 
-**Vercel :** importer le dépôt contenant ce dossier, sélectionner Next.js, définir le répertoire racine si nécessaire, configurer les deux variables publiques et lancer `npm run build`. Vérifier la destination applicative avant d’affecter le domaine officiel.
+**Vercel :** importer le dépôt contenant ce dossier, sélectionner Next.js, définir le répertoire racine si nécessaire, configurer les destinations et les éventuels identifiants de mesure/vérification, puis lancer `npm run build`. Vérifier la destination applicative avant d’affecter le domaine officiel.
 
 **Serveur Node.js :** exécuter `npm ci`, `npm run build`, puis `npm run start` derrière un reverse proxy HTTPS et un superviseur de processus. Conserver `.next`, `public`, les dépendances de production et les fichiers de configuration nécessaires au serveur Next.js.
 

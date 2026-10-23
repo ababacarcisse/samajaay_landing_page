@@ -18,6 +18,7 @@ import { features, faqItems, steps, type FeatureIcon } from "@/lib/content";
 import { navigation, APP_URL } from "@/lib/config";
 import { AppLink, BrandLogo, SectionLabel } from "./ui";
 import { Reveal } from "./reveal";
+import { AnalyticsPreferencesButton } from "./analytics-consent";
 
 const featureIcons = {
   sales: Banknote,
@@ -387,6 +388,7 @@ export function Footer() {
         </div>
         <div className="sj-footer-bottom">
           <p>© {new Date().getFullYear()} SamaJaay. Tous droits réservés.</p>
+          <AnalyticsPreferencesButton />
           <a href="https://samajaay.com/#/privacy">
             Politique de confidentialité
             <ArrowUpRight size={16} aria-hidden="true" />

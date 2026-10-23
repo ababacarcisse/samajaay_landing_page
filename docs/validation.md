@@ -4,6 +4,69 @@ Vérification du **23 octobre 2026**, sur le build de production servi avec
 `npm run start` à `http://localhost:3000`. Ce document concerne la **refonte v2**
 (hero vert profond, textes agrandis, nouvelle composition et section groupage).
 
+## Mise à jour finale : GA4, domaine et animations légères
+
+Le build final intègre l’identifiant public fourni par le propriétaire,
+`G-2E8X0XGQX2`, avec consentement explicite. Le propriétaire a confirmé la
+validation DNS de sa propriété Search Console. Aucun compte distant ni DNS
+n’a été modifié ici, et le sitemap n’a pas été soumis dans cette console.
+
+- `npm run lint`, `npm run typecheck`, `npm run build` et `git diff --check` : réussite.
+- Audit navigateur répété à 360, 390, 430, 768, 1024 et 1440 px : aucun
+  débordement, aucune violation axe, aucune erreur JavaScript ; onglets, FAQ,
+  menu, liens, rendu sans JavaScript et réduction des mouvements fonctionnels.
+- `scripts/audit-analytics.py` : aucun appel Google avant accord ni après refus ;
+  refus persistant, une vue de page par visite, clic CTA consenti unique,
+  retrait bloquant les événements suivants et suppression des cookies GA
+  accessibles. Réouverture au clavier et restitution du focus vérifiées.
+- Les requêtes Google de ces tests ont toutes été interceptées : aucune
+  collecte réelle ni réception dans le compte GA4 n’a été prétendue vérifiée.
+- La redirection `www.samajaay.com` répond en HTTP 308 vers `samajaay.com`,
+  chemin et paramètres conservés. Les véritables jetons de vérification restent
+  absents du build final ; les balises facultatives ont été contrôlées dans un
+  build isolé avec des jetons synthétiques.
+- Le bandeau a été inspecté visuellement sur mobile et ordinateur ; les deux
+  choix mesurent au moins 44 px. Le CTA du hero reste accessible au premier
+  écran mobile. Sans JavaScript, aucune interface de consentement inerte n’est affichée.
+- Motion utilise désormais `motion/react-mini` et Intersection Observer.
+  Les animations fonctionnent en mode normal et restent absentes avec
+  réduction des mouvements ou API d’animation indisponibles. Le contenu reste visible.
+
+Rapports : `artifacts/traffic-seo-final/browser-audit.json`,
+`artifacts/analytics-final/analytics-audit.json` et `motion-audit.json`.
+
+### Performances du build final
+
+| Mesure | Mobile, dernier contrôle | Ordinateur |
+| ------ | -----------------------: | ----------: |
+| Performance | **89** | **100** |
+| Accessibilité | **100** | **100** |
+| Bonnes pratiques | **100** | **100** |
+| SEO | **100** | **100** |
+| LCP | 2 883,9 ms | 627,0 ms |
+| TBT | 289,5 ms | 25,4 ms |
+| CLS | 0 | 0 |
+| Benchmark CPU | 1 943,5 | 1 250 |
+
+Rapports : `artifacts/traffic-seo-lighthouse-mobile-check.report.{json,html}`
+et `artifacts/traffic-seo-lighthouse-desktop-final.report.{json,html}`.
+
+**L’objectif de performance mobile ≥ 90 et le LCP ≤ 2,5 s ne sont pas confirmés.**
+Un premier audit du même build final donnait 67 (TBT 2 871,6 ms, LCP 2 231,6 ms,
+benchmark CPU 1 064) ; il reste conservé sous
+`traffic-seo-lighthouse-mobile-final.report.{json,html}`. Les deux versions
+intermédiaires mesurées avant Motion mini donnaient 86 puis 81, également
+conservées. Cette variabilité interdit de présenter le meilleur score comme
+une garantie de production. Aucun score n’a été obtenu en modifiant le profil
+de ralentissement Lighthouse.
+
+Le passage à Motion mini réduit le JavaScript transféré de 190 298 à 159 242
+octets dans ces rapports, soit environ 31 Ko (16 %). Le CSS du bandeau rejoint
+la feuille principale et supprime une requête CSS bloquante. Ces gains sont
+observables, sans attribuer toute variation de score à une seule modification.
+Les Core Web Vitals, l’INP terrain et la réception réelle des événements restent
+à vérifier après déploiement.
+
 ## Vérifications du code
 
 - `npm run lint` : réussite, sans erreur ni avertissement.
@@ -63,7 +126,7 @@ Ces contrôles ne constituent pas une certification WCAG. Axe laisse un contrôl
 à vérifier manuellement ; une vérification sur appareils physiques et avec
 lecteurs d’écran reste pertinente.
 
-## Lighthouse de la refonte
+## Lighthouse de la refonte avant GA4 : référence antérieure
 
 Lighthouse **13.5.0**, Chromium **154**, profil mobile par défaut et profil
 desktop officiel. Les audits ont été exécutés **l’un après l’autre**, sans

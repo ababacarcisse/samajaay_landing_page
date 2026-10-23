@@ -30,6 +30,8 @@ Les commandes et audits du projet donnent une base de vérification ; les résul
 
 Le propriétaire du domaine peut vérifier sa propriété dans Google Search Console avec la méthode adaptée à son accès, puis soumettre l’URL réelle du sitemap. La méthode et le jeton de vérification doivent provenir de cette propriété ; aucun identifiant n’est inclus arbitrairement dans le projet.
 
+La canonique du domaine officiel est `https://samajaay.com/`, avec une redirection HTTP 308 depuis `www.samajaay.com` dans Next.js. Les balises de vérification Google et Bing sont activables avec leurs véritables jetons. Le [guide de mesure et de référencement](mesure-et-referencement.md) détaille GA4 après consentement, la propriété Search Console de domaine et les tableaux de bord utiles. L’identifiant GA4 `G-2E8X0XGQX2`, fourni par le propriétaire, est intégré ; les visites réelles restent à contrôler après déploiement. Le propriétaire a confirmé la validation DNS de Search Console le 23 octobre 2026. Le sitemap reste à soumettre après déploiement ; Bing reste facultatif et non configuré.
+
 Utiliser ensuite l’inspection de l’URL canonique pour examiner l’accès de Google, l’indexabilité et la canonique choisie. Corriger les éventuelles erreurs d’exploration avant de produire d’autres pages. Les rapports de requêtes peuvent orienter la rédaction avec les mots réellement utilisés par les commerçants ; aucun classement ni délai d’indexation n’est promis.
 
 ## Expliquer précisément le groupage Alibaba

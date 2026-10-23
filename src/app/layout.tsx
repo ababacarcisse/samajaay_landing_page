@@ -20,6 +20,12 @@ export const metadata: Metadata = {
   description,
   applicationName: "SamaJaay",
   alternates: { canonical: SITE_URL },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+    other: process.env.BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION }
+      : undefined,
+  },
   keywords: [
     "application de gestion commerciale Sénégal",
     "logiciel de gestion de stock Sénégal",

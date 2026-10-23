@@ -30,8 +30,8 @@ Le groupage présente une organisation et un suivi manuels : produit, prix fourn
 | `src/components/sections.tsx`                     | Problème, fonctionnalités, étapes, Sénégal, FAQ, CTA final et footer                                               |
 | `src/components/sections.css`                     | Mise en page et styles des sections narratives                                                                     |
 | `src/components/ui.tsx`                           | Logo, CTA partagé, libellé de section et mockup réutilisable                                                       |
-| `src/components/reveal.tsx`, `motion-features.ts` | Révélations ponctuelles et chargement différé des fonctionnalités Motion                                           |
-| `src/components/analytics.tsx`                    | Adaptateur de mesure facultatif respectant le consentement                                                         |
+| `src/components/reveal.tsx`                     | Révélations ponctuelles avec `motion/react-mini` et Intersection Observer                                           |
+| `src/components/analytics.tsx`                    | Pont des clics CTA et intégration GA4 facultative avec consentement explicite                                        |
 | `public/brand/`, `public/screens/`                | Logo officiel et captures JPEG réelles                                                                             |
 
 TypeScript est configuré en mode strict. Les sections de contenu restent des Server Components ; le JavaScript client est réservé au menu, aux captures interactives, aux animations et au pont analytics. Les données produit sont séparées de leur présentation. Tailwind CSS v4 est intégré via PostCSS avec une détection des classes bornée au dossier source : les références des skills installés ne doivent pas augmenter le CSS livré. Les règles CSS dédiées centralisent les couleurs, les courbes d’animation, la typographie et les espacements de base. Lucide fournit les icônes. GSAP n’est pas nécessaire à ces interactions.
@@ -44,7 +44,7 @@ L’échelle de texte courant est de 16–18 px, les notes restent autour de 13�
 
 Le téléphone est construit en CSS autour des captures d’origine. Les fichiers restent inchangés ; un conteneur masque uniquement les barres Android. Les nouvelles captures WhatsApp ne sont pas recréées à partir de leur aperçu dans la conversation.
 
-`Reveal` charge `domAnimation` à la demande avec `LazyMotion` et `MotionDiv` importé depuis `motion/react-m`. L’entrée ponctuelle utilise une chaîne `transform` et une variation d’opacité, sur 0,5 seconde avec une courbe ease-out. `initial={false}` conserve le contenu visible dans le HTML initial, y compris sans JavaScript. Les transitions CSS de capture durent 250 ms et sont désactivées pendant la navigation des onglets avec les flèches, Home et End. `useReducedMotion` et les media queries CSS prennent en compte la préférence du système, y compris pour le défilement doux. Les boutons disposent de retours sobres au survol et à l’appui. Aucun compteur fictif, carrousel automatique ou parallax permanent n’est nécessaire.
+`Reveal` utilise `useAnimate` de `motion/react-mini`, la variante légère de Motion pour React fondée sur la Web Animations API. Un Intersection Observer déclenche chaque entrée une seule fois : chaîne `transform` et variation d’opacité, sur 0,5 seconde avec une courbe ease-out. Le contenu reste visible dans le HTML initial, y compris sans JavaScript et lorsque ces API ne sont pas disponibles. Les transitions CSS de capture durent 250 ms et sont désactivées pendant la navigation des onglets avec les flèches, Home et End. `matchMedia` et les media queries CSS prennent en compte la réduction des mouvements ; un changement de préférence termine les animations en cours. Les boutons disposent de retours sobres au survol et à l’appui. Aucun compteur fictif, carrousel automatique ou parallax permanent n’est nécessaire.
 
 ## Captures et import
 
@@ -76,13 +76,17 @@ Le JSON-LD contient `WebSite`, `SoftwareApplication` et `FAQPage`, rendus unique
 
 ## Performance et mesure
 
-`next/image` réserve les dimensions et adapte les ressources avec `sizes`. L’image principale du hero utilise un chargement immédiat et une priorité élevée ; les captures suivantes utilisent le chargement différé. Les formats AVIF/WebP restent activés dans `next.config.ts`. Manrope est auto-hébergée par `next/font` après compilation et utilise `display: "optional"` : sur réseau lent, la police de secours évite un remplacement tardif du texte. Les animations privilégient transform et opacité ; aucun moteur GSAP ni SDK analytics tiers n’est chargé.
+`next/image` réserve les dimensions et adapte les ressources avec `sizes`. L’image principale du hero utilise un chargement immédiat et une priorité élevée ; les captures suivantes utilisent le chargement différé. Les formats AVIF/WebP restent activés dans `next.config.ts`. Manrope est auto-hébergée par `next/font` après compilation et utilise `display: "optional"` : sur réseau lent, la police de secours évite un remplacement tardif du texte. Les animations privilégient transform et opacité ; aucun moteur GSAP n’est nécessaire. Le tag Google reste absent avant consentement, y compris lorsqu’un identifiant GA4 est configuré.
 
 L’application cible LCP ≤ 2,5 s, INP ≤ 200 ms et CLS ≤ 0,1 ainsi que les objectifs Lighthouse du brief. Ce sont des objectifs à vérifier : les rapports réels et captures de contrôle appartiennent à `artifacts/`, et `scripts/audit.py` complète les contrôles automatiques. Ne pas transformer une mesure locale en garantie de performances terrain ; les Core Web Vitals se mesurent au 75e percentile du trafic, en distinguant mobile et ordinateur.
 
 ## Analytics optionnel
 
-Les liens de conversion portent un attribut `data-cta-location`. `AnalyticsBridge` délègue les clics à un unique écouteur et recherche un adaptateur hôte `window.samajaayAnalytics`. L’adaptateur doit exposer `hasConsent(): boolean` et `track("cta_click", { placement, destination })`. Sans adaptateur ou sans consentement, aucun événement n’est envoyé. Les erreurs de mesure sont absorbées pour préserver la navigation. Aucun stockage, cookie, identifiant ou suivi tiers n’est activé par ce projet.
+Les liens de conversion portent un attribut `data-cta-location`. `AnalyticsBridge` délègue les clics à un unique écouteur. L’identifiant GA4 public fourni par le propriétaire (`G-2E8X0XGQX2`) est utilisé par défaut ; `NEXT_PUBLIC_GA_MEASUREMENT_ID` peut le remplacer et une valeur explicitement vide désactive l’intégration. GA4 attend le consentement avant de charger le tag avec `next/script`. L’intégration mesure la vue de page et `cta_click` avec `placement` et `destination`. Le choix peut être rouvert depuis le footer. La mesure publicitaire et la personnalisation restent désactivées.
+
+Lorsque GA4 est explicitement désactivé, un adaptateur hôte `window.samajaayAnalytics` peut fournir `hasConsent(): boolean` et `track("cta_click", { placement, destination })`. Sans adaptateur ou sans consentement, aucun événement n’est envoyé. Les erreurs de mesure sont absorbées pour préserver la navigation. Les comptes, la vérification DNS ou HTML et la validation des rapports réels sont expliqués dans [mesure-et-referencement.md](mesure-et-referencement.md).
+
+La Metadata API produit les balises `google-site-verification` et `msvalidate.01` uniquement si leurs véritables jetons sont configurés. `next.config.ts` redirige les requêtes pour `www.samajaay.com` vers `https://samajaay.com/` en HTTP 308, chemin et paramètres conservés. Ces réglages ne modifient pas le DNS.
 
 ## Hébergement et intégration
 
@@ -107,7 +111,7 @@ Les décisions visuelles sont décrites dans [refonte-design.md](refonte-design.
 - [W3C WAI : accordéons](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/)
 - [W3C WAI : onglets](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/)
 - [Google web.dev : Core Web Vitals](https://web.dev/articles/vitals)
-- [Source officielle Motion : LazyMotion](https://github.com/motiondivision/motion/blob/main/packages/framer-motion/src/components/LazyMotion/index.tsx)
+- [Documentation officielle Motion : useAnimate et variante mini](https://motion.dev/docs/react-use-animate)
 - [Source officielle Motion : useReducedMotion](https://github.com/motiondivision/motion/blob/main/packages/framer-motion/src/utils/reduced-motion/use-reduced-motion.ts)
 - [Source officielle Tailwind : module PostCSS](https://github.com/tailwindlabs/tailwindcss/blob/main/packages/%40tailwindcss-postcss/README.md)
 

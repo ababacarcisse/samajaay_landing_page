@@ -1,11 +1,7 @@
 "use client";
 
-import { LazyMotion, useReducedMotion } from "motion/react";
-import { div as MotionDiv } from "motion/react-m";
-import type { ReactNode } from "react";
-
-const loadFeatures = () =>
-  import("./motion-features").then((module) => module.default);
+import { useAnimate } from "motion/react-mini";
+import { useEffect, type ReactNode } from "react";
 
 /** Content is visible in the server HTML, including when JavaScript is disabled. */
 export function Reveal({
@@ -17,25 +13,52 @@ export function Reveal({
   className?: string;
   delay?: number;
 }) {
-  const reduced = useReducedMotion();
+  const [scope, animate] = useAnimate<HTMLDivElement>();
+
+  useEffect(() => {
+    const element = scope.current;
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (
+      !element ||
+      preference.matches ||
+      !("IntersectionObserver" in window) ||
+      typeof element.animate !== "function"
+    ) return;
+
+    let controls: ReturnType<typeof animate> | undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        if (preference.matches) return;
+        controls = animate(
+          element,
+          {
+            transform: ["translateY(16px)", "translateY(0px)"],
+            opacity: [0.72, 1],
+          },
+          { duration: 0.5, delay, ease: [0.23, 1, 0.32, 1] },
+        );
+      },
+      { threshold: 0.12 },
+    );
+    const respectPreference = () => {
+      if (!preference.matches) return;
+      observer.disconnect();
+      controls?.complete();
+    };
+    observer.observe(element);
+    preference.addEventListener("change", respectPreference);
+    return () => {
+      observer.disconnect();
+      preference.removeEventListener("change", respectPreference);
+      controls?.stop();
+    };
+  }, [animate, scope, delay]);
+
   return (
-    <LazyMotion features={loadFeatures} strict>
-      <MotionDiv
-        className={className}
-        initial={false}
-        whileInView={
-          reduced
-            ? undefined
-            : {
-                transform: ["translateY(16px)", "translateY(0px)"],
-                opacity: [0.72, 1],
-              }
-        }
-        viewport={{ once: true, amount: 0.12 }}
-        transition={{ duration: 0.5, delay, ease: [0.23, 1, 0.32, 1] }}
-      >
-        {children}
-      </MotionDiv>
-    </LazyMotion>
+    <div ref={scope} className={className}>
+      {children}
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { AnalyticsConsent } from "./analytics-consent";
 
 declare global {
   interface Window {
@@ -14,7 +15,7 @@ declare global {
   }
 }
 
-/** An optional host-provided adapter: no tracker, cookie, or external request by default. */
+/** A host adapter, or optional GA4 integration, that only receives consented clicks. */
 export function AnalyticsBridge() {
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -37,5 +38,5 @@ export function AnalyticsBridge() {
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);
   }, []);
-  return null;
+  return <AnalyticsConsent />;
 }
