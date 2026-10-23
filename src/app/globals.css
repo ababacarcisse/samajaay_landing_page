@@ -348,13 +348,16 @@ img {
 }
 .senegal-flag i {
   width: 33.333%;
-  background: #2ac770;
+  background: #00853f;
 }
 .senegal-flag i:nth-child(2) {
-  background: #f6d965;
+  display: grid;
+  place-items: center;
+  color: #00853f;
+  background: #fdef42;
 }
 .senegal-flag i:nth-child(3) {
-  background: #ed786a;
+  background: #e31b23;
 }
 .hero-phone-wrap {
   transform: rotate(-2deg);

@@ -1,4 +1,4 @@
-import { ArrowDown, Check, Smartphone } from "lucide-react";
+import { ArrowDown, Check, Smartphone, Star } from "lucide-react";
 import { AppLink, PhoneMockup } from "./ui";
 import { Reveal } from "./reveal";
 
@@ -35,7 +35,9 @@ export function Hero() {
           <div className="hero-art-label">
             <span className="senegal-flag" aria-hidden="true">
               <i />
-              <i />
+              <i>
+                <Star size={6} fill="currentColor" strokeWidth={0} />
+              </i>
               <i />
             </span>
             Ton activité, en FCFA.
